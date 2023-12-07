@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: shareservices 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shareservices
+  template:
+    metadata:
+      labels:
+        app: shareservices 
+    spec:
+      containers:
+        - name: shareservices 
+          image: acrgtechdev.azurecr.io/shareservices
+          ports:
+          - containerPort: 80

@@ -1,0 +1,55 @@
+# Deploy to Azure Kubernetes Service
+# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger: none
+
+resources:
+- repo: self
+
+variables:
+
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '85114751-dc3f-467e-a30e-420372b326ff'
+  imageRepository: 'shareservices'
+  containerRegistry: 'acrgtechpprod.azurecr.io'
+  dockerfilePath: '**/Dockerfile'
+  imagePullSecret: 'acrgtechpprod439477fa-auth'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+
+stages:
+- stage: Deploy
+  displayName: Deploy Prod
+
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy
+    pool:
+      vmImage: $(vmImageName)
+    environment: 'ShareServices-9180.sharedservices'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+          - task: KubernetesManifest@0
+            displayName: Create imagePullSecret
+            inputs:
+              action: createSecret
+              secretName: $(imagePullSecret)
+              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+
+          - task: KubernetesManifest@0
+            displayName: Deploy to Kubernetes cluster
+            inputs:
+              action: deploy
+              manifests: |
+                $(Pipeline.Workspace)/s/src/Starhub.Shared.Service/K8s/prod/deployment.yml
+              #  $(Pipeline.Workspace)/s/src/Starhub.Shared.Service/K8s/prod/configmap.yml
+              imagePullSecrets: |
+                $(imagePullSecret)
+              containers: |
+                $(containerRegistry)/$(imageRepository):latest

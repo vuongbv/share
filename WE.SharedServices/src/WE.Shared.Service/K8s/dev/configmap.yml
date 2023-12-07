@@ -1,0 +1,59 @@
+﻿apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wesharedservices-config
+  namespace: wesharedservices
+data:
+  AzureAd__CallbackPath: /signin-oidc
+  AzureAd__ClientId: 2ef62688-6a9f-4a6e-a941-9599c647578b
+  AzureAd__ClientSecret: IC48Q~kZ_QGUOx6I3kINaLxwLHP0manzXJxzubO6
+  AzureAd__Domain: wiredgeb2cdev.onmicrosoft.com
+  AzureAd__Instance: https://login.microsoftonline.com/
+  AzureAd__SignedOutCallbackPath: /signout-callback-oidc
+  AzureAd__TenantId: abe6ad1a-d476-42e0-b2f4-290bda2f060c
+  Identity__AzureAdB2C__ClientId: 2ef62688-6a9f-4a6e-a941-9599c647578b
+  Identity__AzureAdB2C__ClientSecret: IC48Q~kZ_QGUOx6I3kINaLxwLHP0manzXJxzubO6
+  Identity__AzureAdB2C__Domain: wiredgeb2cdev.onmicrosoft.com
+  Identity__AzureAdB2C__Instance: https://wiredgeb2cdev.b2clogin.com
+  Identity__AzureAdB2C__SignUpSignInPolicyId: B2C_1_WiredgeSignin_DEV
+  Identity__AzureAdB2C__SignedOutCallbackPath: /signout/B2C_1_WiredgeSignin_DEV
+  Identity__AzureAdB2C__TenantId: abe6ad1a-d476-42e0-b2f4-290bda2f060c
+  PowerBi__ServiceRootUrl: "https://api.powerbi.com/"
+  Database__type: "MongoDb"
+  Database__MongoDb__shareDatabase: "we-dev"
+  Database__MongoDb__configuration: >-
+    mongodb://db-we-dev:GraJRoHyKysFnojdWaRoidTra8OiEziV3yVXAXHpqwLhntxoWNhrXANb2N01SwYwZYJIrHHB8NCtACDbckyI8Q==@db-we-dev.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@db-we-dev@
+  Caching__type: "Redis"
+  Caching__Redis__AbortOnConnectFail: "true"
+  Caching__Redis__KeyPrefix: "_my_key_prefix_"
+  Caching__Redis__Hosts: |
+     - Host: "we-dev.redis.cache.windows.net"
+       Port: "6380"
+  Caching__Redis__ServiceName: ""
+  Caching__Redis__AllowAdmin: "true"
+  Caching__Redis__ConnectTimeout: "3000"
+  Caching__Redis__Database: "0"
+  Caching__Redis__Ssl: "true"  
+  Caching__Redis__PoolSize: "5"
+  Caching__Redis__IsDefault: "true"
+  Caching__Redis__Name: ""
+  NLog__internalLogLevel: "Info"
+  NLog__internalLogFile: "Data/Logs/North.log"
+  NLog__extensions: |
+     - assembly: "NLog.Extensions.Logging"
+  NLog__targets__allfile__type: "File"
+  NLog__targets__allfile__fileName: "c:/temp/nlog-all-${shortdate}.log"
+  NLog__targets__allfile__layout: "${longdate}|${event-properties:item=EventId_Id}|${uppercase:${level}}|${logger}|${message} ${exception:format=tostring}"
+  NLog__targets__ownFile-web__type: "File"
+  NLog__targets__ownFile-web__fileName: "c:/temp/nlog-own-${shortdate}.log"
+  NLog__targets__ownFile-web__layout: "${longdate}|${event-properties:item=EventId_Id}|${uppercase:${level}}|${logger}|${message} ${exception:format=tostring}|url: ${aspnet-request-url}|action: ${aspnet-mvc-action}"
+  NLog__rules: | 
+   - logger: "*",
+     minLevel: "Trace"
+     writeTo: "allfile"
+   - logger: "Microsoft.*"
+     maxLevel: "Info"
+     final: "true"
+   - logger: "*"
+     minLevel: "Trace"
+     writeTo: "ownFile-web"

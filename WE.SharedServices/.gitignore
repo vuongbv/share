@@ -1,0 +1,27 @@
+# User-specific files
+*.log
+*.suo
+*.user
+*.vs
+
+.angular
+.awCache
+.idea
+.vscode
+
+# Build results
+bin/
+build/
+obj/
+object/
+out/
+publish/
+
+# Test Output
+_test-output/
+
+# NodeJS 
+node_modules/
+
+.DS_Store
+*.DS_Store

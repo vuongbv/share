@@ -1,0 +1,30 @@
+﻿apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: weshareservices-config
+  namespace: wesharedservices
+data:
+  tenantStorage: |
+    type: MongoDb
+    MongoDb: {}
+    InMemory: {}
+    Redis: {}
+    KeyVault:
+      keyVaultUri: ""
+    Cache:
+      type: InMemory
+    TenantIdentification:
+      type: RequestParam
+      RequestHost: {}
+      RequestHeader: {}
+      RequestParam: {}
+      Any:
+        - RequestHost
+        - RequestHeader
+        - RequestParam
+      Custom: {}
+  database: |
+    type: MongoDb
+    MongoDb:
+      shareDatabase: "we-dev"
+      configuration: "mongodb://db-we-dev:GraJRoHyKysFnojdWaRoidTra8OiEziV3yVXAXHpqwLhntxoWNhrXANb2N01SwYwZYJIrHHB8NCtACDbckyI8Q==@db-we-dev.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@db-we-dev@"
